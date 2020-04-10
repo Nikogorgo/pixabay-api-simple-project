@@ -32,16 +32,12 @@ function App() {
         <ImageSearch searchText = {(text) => setTerm(text)} />
 
         {!isLoading && images.length > 0 ?  
-        
         <div className="grid grid-cols-3 gap-4">
           {images.map(image => (
             <ImageCard key={image.id} image={image}/>
           ))}
         </div> 
-        
         : 'empty search again '}
-
-        
       </>
       
       }
