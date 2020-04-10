@@ -1,25 +1,54 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect} from 'react';
+import ImageCard from './components/imageCard';
+import ImageSearch from './components/imageSearch';
+
+
 
 function App() {
+
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [term, setTerm] = useState('');
+
+  useEffect(() => {
+    fetch(`https://pixabay.com/api/?key=${process.env.REACT_APP_PIXABAY_API_KEY}&q=${term}&image_type=photo&pretty=true`)
+      .then(res => res.json())
+      .then(data => {
+        setImages(data.hits);
+        setIsLoading(false);
+      })
+      .catch(err => console.err(err));
+  },[term])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <>
+    <div className="container mx-auto">
+      {isLoading 
+      ? 
+      <h1 className="text-6xl"> LOADING... </h1>
+      :  
+      <>
+
+        <ImageSearch searchText = {(text) => setTerm(text)} />
+
+        {!isLoading && images.length > 0 ?  
+        
+        <div className="grid grid-cols-3 gap-4">
+          {images.map(image => (
+            <ImageCard key={image.id} image={image}/>
+          ))}
+        </div> 
+        
+        : 'empty search again '}
+
+        
+      </>
+      
+      }
+      
+      
     </div>
+    </>
   );
 }
 
